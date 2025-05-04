@@ -56,6 +56,20 @@ project_grafos/
 
 ## 🚀 Como Instalar e Executar
 
+### 2. Verifique o Python:
+
+```bash
+python --version
+
+### 3.1 Execute o programa:
+python src/main.py
+💡 Uma janela gráfica será aberta com o simulador de filas.
+
+### 4.1 Execute os testes unitários:
+python -m unittest tests/test_bfs.py
+python -m unittest tests/test_dfs.py
+
+
 ### 1. Clone o repositório:
 
 ```bash
