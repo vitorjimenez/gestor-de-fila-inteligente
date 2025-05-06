@@ -1,4 +1,4 @@
-# 🧠 Gestor de Filas Inteligentes
+# 🧠 SmartQueue Market - Gestor de Filas Inteligentes
 
 Simulador de um mercado inteligente modelado como grafo, com interface gráfica interativa e algoritmos de busca (BFS e DFS) para otimização do atendimento ao cliente.
 
@@ -108,9 +108,9 @@ Etapa	Atividades	Prazo	Status
 2	Seleção dos algoritmos (BFS/DFS)	30/04/2025	✅ Concluído
 3	Escolha das tecnologias	05/05/2025	✅ Concluído
 4	Criação da estrutura de pastas	10/05/2025	✅ Concluído
-5	Implementação do grafo (market_graph)	20/05/2025	✅ Concluído
-6	Implementação de BFS e DFS	25/05/2025	✅ Concluído
-7	Implementação da interface gráfica	30/05/2025	✅ Concluído
+5	Implementação do grafo (market_graph)	20/05/2025	🔜 A fazer
+6	Implementação de BFS e DFS	25/05/2025	🔜 A fazer
+7	Implementação da interface gráfica	30/05/2025	🔜 A fazer
 8	Testes e validação	05/06/2025	🔜 A fazer
 9	Documentação e apresentação	10/06/2025	🔜 A fazer
 
