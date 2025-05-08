@@ -4,14 +4,12 @@ Módulo para visualização do mercado e caminhos.
 import tkinter as tk
 import random
 import time
-from src.data.market_graph import MarketGraph
-from src.algorithms.bfs import bfs
-from src.algorithms.dfs import dfs
+from data.market_graph import MarketGraph
+from algorithms.bfs import bfs
+from algorithms.dfs import dfs
 
 
 class MarketApp:
-    """Classe que gerencia a interface gráfica e a simulação do mercado."""
-    
     def __init__(self, root):
         """
         Inicializa a aplicação com janela, canvas e botões.
@@ -22,27 +20,24 @@ class MarketApp:
         self.root = root
         self.root.title("Gestor de Filas em Mercados Inteligentes")
         self.cell_size = 50
-        self.grid_size = (5, 5)  # (rows, cols)
+        self.grid_size = (5, 5)  # (linhas, colunas)
         self.start = (0, 0)
         self.cashiers = [(4, 4), (4, 0), (0, 4)]
+        self.cashier_load = {}
         self.blocked = []
 
-        # Configura a interface gráfica
         self._setup_ui()
-        # Inicializa o grafo e bloqueios
         self.graph = MarketGraph()
         self.reset()
 
     def _setup_ui(self):
         """Configura o canvas, botões e label da interface."""
-        # Canvas para o grid
         canvas_width = self.grid_size[1] * self.cell_size + 20
         canvas_height = self.grid_size[0] * self.cell_size + 20
         self.canvas = tk.Canvas(self.root, width=canvas_width, height=canvas_height,
                                 bg="lightgray", highlightthickness=2, highlightbackground="black")
         self.canvas.pack(pady=10)
 
-        # Frame para botões
         btn_frame = tk.Frame(self.root, bg="lightgray")
         btn_frame.pack(fill=tk.X)
         buttons = [
@@ -54,7 +49,6 @@ class MarketApp:
         for text, command, bg in buttons:
             tk.Button(btn_frame, text=text, command=command, bg=bg).pack(side=tk.LEFT, padx=5, pady=5)
 
-        # Label para resultados
         self.result_label = tk.Label(self.root, text="Aguardando ação...", font=("Arial", 12), bg="lightgray")
         self.result_label.pack(pady=5)
 
@@ -73,15 +67,18 @@ class MarketApp:
                     self.graph.add_edge(vertex, (i, j + 1))
 
     def generate_random_blocks(self):
-        """Gera 5 bloqueios aleatórios, evitando início e caixas."""
+        """Gera bloqueios aleatórios e cargas nos caixas."""
         self.blocked = []
         possible = [(i, j) for i in range(self.grid_size[0]) for j in range(self.grid_size[1])
                     if (i, j) not in [self.start] + self.cashiers]
         self.blocked = random.sample(possible, 5)
+
+        self.cashier_load = {cashier: random.randint(1, 5) for cashier in self.cashiers}
+
         self.generate_graph()
         self.draw_market()
-        self.result_label.config(text="Bloqueios atualizados!")
-        print("Bloqueios atualizados!")
+        self.result_label.config(text="Bloqueios e filas atualizados!")
+        print("Bloqueios e filas atualizados!")
 
     def draw_market(self):
         """Desenha o grid do mercado no canvas."""
@@ -92,22 +89,19 @@ class MarketApp:
                 x1, y1 = j * self.cell_size + 10, i * self.cell_size + 10
                 x2, y2 = x1 + self.cell_size, y1 + self.cell_size
                 color = "white"
+                text = f"{i},{j}"
                 if (i, j) == self.start:
                     color = "limegreen"
                 elif (i, j) in self.cashiers:
                     color = "dodgerblue"
+                    text += f"\n{self.cashier_load.get((i, j), '?')}p"
                 elif (i, j) in self.blocked:
                     color = "crimson"
                 self.canvas.create_rectangle(x1, y1, x2, y2, fill=color, outline="black", width=2)
-                self.canvas.create_text((x1 + x2) / 2, (y1 + y2) / 2, text=f"{i},{j}", font=("Arial", 8))
+                self.canvas.create_text((x1 + x2) / 2, (y1 + y2) / 2, text=text, font=("Arial", 8))
 
     def draw_path(self, path):
-        """
-        Desenha o caminho no canvas com linhas amarelas.
-        
-        Args:
-            path: Lista de vértices que formam o caminho
-        """
+        """Desenha o caminho no canvas com linhas amarelas."""
         if not path:
             return
         for i in range(len(path) - 1):
@@ -119,7 +113,7 @@ class MarketApp:
 
     def run_search(self, algorithm):
         """
-        Executa o algoritmo de busca especificado (bfs ou dfs).
+        Executa o algoritmo de busca especificado (BFS ou DFS).
         
         Args:
             algorithm: Função de busca (bfs ou dfs)
@@ -127,24 +121,24 @@ class MarketApp:
         self.draw_market()
         start_time = time.time()
         
-        # Chamada aos algoritmos importados
         if algorithm == bfs:
             path, cashier = bfs(self.graph, self.start, set(self.cashiers))
-            algorithm_name = "BFS"
+            name = "BFS"
         else:
             path, cashier = dfs(self.graph, self.start, set(self.cashiers))
-            algorithm_name = "DFS"
-            
-        elapsed = (time.time() - start_time) * 1000  # Tempo em ms
-        
+            name = "DFS"
+
+        elapsed = (time.time() - start_time) * 1000  # tempo em ms
+
         if path:
             steps = len(path) - 1
-            msg = f"{algorithm_name}: {steps} passos até caixa {cashier}, {elapsed:.2f}ms"
+            fila = self.cashier_load.get(cashier, "?")
+            msg = f"{name}: {steps} passos até caixa {cashier} (fila: {fila}), {elapsed:.2f}ms"
             print(msg + f": {path}")
             self.result_label.config(text=msg)
             self.draw_path(path)
         else:
-            msg = f"{algorithm_name}: Nenhum caminho encontrado!"
+            msg = f"{name}: Nenhum caminho encontrado!"
             print(msg)
             self.result_label.config(text=msg)
 
@@ -159,6 +153,7 @@ class MarketApp:
     def reset(self):
         """Reseta o mercado, removendo bloqueios e recriando o grafo."""
         self.blocked = []
+        self.cashier_load = {cashier: random.randint(1, 5) for cashier in self.cashiers}
         self.generate_graph()
         self.draw_market()
         self.result_label.config(text="Mercado resetado!")

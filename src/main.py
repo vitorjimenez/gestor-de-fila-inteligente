@@ -2,7 +2,7 @@
 Ponto de entrada principal para a aplicação Gestor de Filas Inteligente.
 """
 import tkinter as tk
-from src.utils.visualization import MarketApp
+from utils.visualization import MarketApp
 
 
 def main():
