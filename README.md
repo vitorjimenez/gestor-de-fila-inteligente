@@ -62,7 +62,7 @@ project_grafos/
 python --version
 
 ### 3.1 Execute o programa:
-python src/main.py
+python src/main.py ou python -m src.main
 💡 Uma janela gráfica será aberta com o simulador de filas.
 
 ### 4.1 Execute os testes unitários:
