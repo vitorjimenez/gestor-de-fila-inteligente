@@ -22,12 +22,11 @@ class MarketApp:
         self.root.title("Mercado Inteligente - Navegação Otimizada")
         self.cell_size = 40
         self.grid_size = (10, 10)
-        self.start = (0, 0)
-        # 5 caixas, incluindo a posição (9, 9)
-        self.cashiers = [(9, 1), (9, 3), (9, 5), (9, 7)]
+        self.start = (0, 0)  # Apenas um carrinho
+        self.cashiers = [(9, 0), (9, 2), (9, 4), (9, 6), (9, 9)]
         self.blocked = []  # Produtos (📦)
         self.forklifts = []  # Empilhadeiras (🚜)
-        self.path = None
+        self.path = None  # Caminho do carrinho
         self.current_step = 0
 
         # Configura a interface gráfica
@@ -72,21 +71,31 @@ class MarketApp:
         self.result_label.pack(pady=5)
 
     def generate_graph(self):
-        """Cria o grafo do mercado com base no grid e bloqueios."""
+        """Cria o grafo do mercado com base no grid e bloqueios, excluindo corredores marrons."""
         self.graph = MarketGraph()
         rows, cols = self.grid_size
+        # Define os corredores marrons (colunas 2, 5, 8, linhas 2 a 5)
+        corridor_positions = [(i, j) for i in range(2, 6) for j in (2, 5, 8)]
+
         for i in range(rows):
             for j in range(cols):
                 vertex = (i, j)
-                if vertex in self.blocked or vertex in self.forklifts:
+                # Exclui vértices que estão nos corredores marrons, bloqueados ou com empilhadeiras
+                if vertex in corridor_positions or vertex in self.blocked or vertex in self.forklifts:
                     continue
-                if i < rows - 1 and (i + 1, j) not in self.blocked and (i + 1, j) not in self.forklifts:
-                    self.graph.add_edge(vertex, (i + 1, j))
-                if j < cols - 1 and (i, j + 1) not in self.blocked and (i, j + 1) not in self.forklifts:
-                    self.graph.add_edge(vertex, (i, j + 1))
+                # Adiciona arestas para baixo
+                if i < rows - 1:
+                    next_vertex = (i + 1, j)
+                    if next_vertex not in corridor_positions and next_vertex not in self.blocked and next_vertex not in self.forklifts:
+                        self.graph.add_edge(vertex, next_vertex)
+                # Adiciona arestas para a direita
+                if j < cols - 1:
+                    next_vertex = (i, j + 1)
+                    if next_vertex not in corridor_positions and next_vertex not in self.blocked and next_vertex not in self.forklifts:
+                        self.graph.add_edge(vertex, next_vertex)
 
     def generate_random_blocks(self):
-        """Gera 15 produtos (📦) e 1 empilhadeira (🚜), evitando início, caixas e suas adjacências."""
+        """Gera 10 produtos (📦) e 2 empilhadeiras (🚜), evitando início, caixas, suas adjacências e corredores."""
         self.blocked = []
         self.forklifts = []
 
@@ -94,7 +103,6 @@ class MarketApp:
         forbidden_positions = set()
         for cashier in self.cashiers:
             i, j = cashier
-            # Adiciona posições adjacentes (cima, baixo, esquerda, direita)
             adjacents = [
                 (i-1, j) if i > 0 else None,  # Cima
                 (i+1, j) if i < self.grid_size[0] - 1 else None,  # Baixo
@@ -109,24 +117,27 @@ class MarketApp:
         forbidden_positions.update(self.cashiers)
         forbidden_positions.add(self.start)
 
-        # Gera posições possíveis para produtos e empilhadeira
-        possible = [(i, j) for i in range(self.grid_size[0]) for j in range(self.grid_size[1])
-                    if (i, j) not in forbidden_positions]
+        # Define os corredores (colunas 2, 5, 8, linhas 2 a 5) como posições proibidas para produtos e empilhadeiras
+        corridor_positions = [(i, j) for i in range(2, 6) for j in (2, 5, 8)]
 
-        # Gera 15 produtos (📦)
-        if len(possible) >= 16:  # Garante espaço para produtos e empilhadeira
-            self.blocked = random.sample(possible, 15)
+        # Gera posições possíveis para produtos e empilhadeiras (excluindo corredores)
+        possible_positions = [(i, j) for i in range(self.grid_size[0]) for j in range(self.grid_size[1])
+                             if (i, j) not in forbidden_positions and (i, j) not in corridor_positions]
+
+        # Gera 10 produtos (📦)
+        if len(possible_positions) >= 12:  # 10 produtos + 2 empilhadeiras
+            self.blocked = random.sample(possible_positions, 10)
             # Atualiza posições possíveis removendo os produtos já colocados
-            possible = [(i, j) for i, j in possible if (i, j) not in self.blocked]
-            # Gera 1 empilhadeira (🚜) em um corredor (coluna ímpar)
-            corridor_positions = [(i, j) for i, j in possible if j % 2 == 1 and 2 <= i <= 5]
-            if corridor_positions:
-                self.forklifts = random.sample(corridor_positions, 1)
+            possible_for_forklifts = [(i, j) for i in range(self.grid_size[0]) for j in range(self.grid_size[1])
+                                      if (i, j) not in forbidden_positions and (i, j) not in self.blocked and (i, j) not in corridor_positions]
+            # Gera 2 empilhadeiras (🚜) fora dos corredores
+            if len(possible_for_forklifts) >= 2:
+                self.forklifts = random.sample(possible_for_forklifts, 2)
 
         self.generate_graph()
         self.draw_market()
-        self.result_label.config(text="Produtos e empilhadeira adicionados!")
-        print("Produtos e empilhadeira adicionados!")
+        self.result_label.config(text="Produtos e empilhadeiras adicionados!")
+        print("Produtos e empilhadeiras adicionados!")
 
     def move_cart_random(self):
         """Move o carrinho para uma posição aleatória que não seja bloqueada, empilhadeira ou um caixa."""
@@ -200,20 +211,19 @@ class MarketApp:
                                     fill="#444444", width=3)
 
     def animate_path(self):
-        """Anima o caminho desenhando passo a passo."""
-        if self.path and self.current_step < len(self.path):
-            if self.current_step > 0:
-                prev = self.path[self.current_step - 1]
-                curr = self.path[self.current_step]
-                x1 = prev[1] * self.cell_size + self.cell_size // 2 + 10
-                y1 = prev[0] * self.cell_size + self.cell_size // 2 + 10
-                x2 = curr[1] * self.cell_size + self.cell_size // 2 + 10
-                y2 = curr[0] * self.cell_size + self.cell_size // 2 + 10
-                self.canvas.create_line(x1, y1, x2, y2, fill="#FFC107", width=4)
+        """Anima o caminho desenhando passo a passo até o final."""
+        if self.path and self.current_step < len(self.path) - 1:  # Desenha até o último passo
+            prev = self.path[self.current_step]
+            curr = self.path[self.current_step + 1]
+            x1 = prev[1] * self.cell_size + self.cell_size // 2 + 10
+            y1 = prev[0] * self.cell_size + self.cell_size // 2 + 10
+            x2 = curr[1] * self.cell_size + self.cell_size // 2 + 10
+            y2 = curr[0] * self.cell_size + self.cell_size // 2 + 10
+            self.canvas.create_line(x1, y1, x2, y2, fill="#FFC107", width=4)
             self.current_step += 1
             self.root.after(200, self.animate_path)
         else:
-            self.current_step = 0
+            self.current_step = 0  # Reinicia para a próxima animação
 
     def run_search(self, algorithm):
         """
@@ -226,12 +236,12 @@ class MarketApp:
         start_time = time.time()
         
         if algorithm == bfs:
-            self.path, cashier = bfs(self.graph, self.start, set(self.cashiers))
             algorithm_name = "BFS"
         else:
-            self.path, cashier = dfs(self.graph, self.start, set(self.cashiers))
             algorithm_name = "DFS"
-            
+        
+        # Executa o algoritmo
+        self.path, cashier = algorithm(self.graph, self.start, set(self.cashiers))
         elapsed = (time.time() - start_time) * 1000
         
         if self.path:
@@ -241,21 +251,31 @@ class MarketApp:
             self.result_label.config(text=msg)
             self.current_step = 0
             self.animate_path()
+            return self.path, cashier
         else:
             msg = f"{algorithm_name}: Nenhum caminho encontrado!"
             print(msg)
             self.result_label.config(text=msg)
+            return None, None
 
     def run_bfs(self):
-        """Executa a busca em largura."""
-        self.run_search(bfs)
+        """Executa a busca em largura e, se encontrar um caminho, executa o DFS automaticamente."""
+        print("Iniciando BFS...")
+        bfs_path, bfs_cashier = self.run_search(bfs)
+        if bfs_path:  # Se o BFS encontrar um caminho, executa o DFS
+            print("BFS encontrou um caminho. Agendando DFS...")
+            self.root.after(1000 * (len(bfs_path) - 1), self.run_dfs)  # Aguarda a animação do BFS terminar
+        else:
+            print("BFS não encontrou um caminho. DFS não será executado.")
 
     def run_dfs(self):
         """Executa a busca em profundidade."""
+        print("Iniciando DFS...")
         self.run_search(dfs)
 
     def reset(self):
         """Reseta o mercado, removendo bloqueios e recriando o grafo."""
+        self.start = (0, 0)
         self.blocked = []
         self.forklifts = []
         self.path = None
