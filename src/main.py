@@ -1,16 +1,10 @@
-"""
-Ponto de entrada principal para a aplicação Gestor de Filas Inteligente.
-"""
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import tkinter as tk
 from src.utils.visualization import MarketApp
 
-
-def main():
-    """Função principal que inicia a aplicação."""
+if __name__ == "__main__":
     root = tk.Tk()
     app = MarketApp(root)
     root.mainloop()
-
-
-if __name__ == "__main__":
-    main()

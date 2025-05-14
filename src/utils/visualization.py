@@ -8,7 +8,6 @@ from src.data.market_graph import MarketGraph
 from src.algorithms.bfs import bfs
 from src.algorithms.dfs import dfs
 
-
 class MarketApp:
     """Classe que gerencia a interface gráfica e a simulação do mercado."""
     
@@ -22,11 +21,12 @@ class MarketApp:
         self.root = root
         self.root.title("Mercado Inteligente - Navegação Otimizada")
         self.cell_size = 40
-        self.grid_size = (10, 10)  # Aumentado para 10x10
+        self.grid_size = (10, 10)
         self.start = (0, 0)
-        # Mais caixas em posições fixas
-        self.cashiers = [(9, 9), (9, 0), (0, 9), (4, 9), (9, 4)]
-        self.blocked = []
+        # 5 caixas, incluindo a posição (9, 9)
+        self.cashiers = [(9, 1), (9, 3), (9, 5), (9, 7)]
+        self.blocked = []  # Produtos (📦)
+        self.forklifts = []  # Empilhadeiras (🚜)
         self.path = None
         self.current_step = 0
 
@@ -78,29 +78,60 @@ class MarketApp:
         for i in range(rows):
             for j in range(cols):
                 vertex = (i, j)
-                if vertex in self.blocked:
+                if vertex in self.blocked or vertex in self.forklifts:
                     continue
-                if i < rows - 1 and (i + 1, j) not in self.blocked:
+                if i < rows - 1 and (i + 1, j) not in self.blocked and (i + 1, j) not in self.forklifts:
                     self.graph.add_edge(vertex, (i + 1, j))
-                if j < cols - 1 and (i, j + 1) not in self.blocked:
+                if j < cols - 1 and (i, j + 1) not in self.blocked and (i, j + 1) not in self.forklifts:
                     self.graph.add_edge(vertex, (i, j + 1))
 
     def generate_random_blocks(self):
-        """Gera 15 bloqueios aleatórios (produtos nas prateleiras), evitando início e caixas."""
+        """Gera 15 produtos (📦) e 1 empilhadeira (🚜), evitando início, caixas e suas adjacências."""
         self.blocked = []
+        self.forklifts = []
+
+        # Define posições adjacentes aos caixas (espaço de segurança)
+        forbidden_positions = set()
+        for cashier in self.cashiers:
+            i, j = cashier
+            # Adiciona posições adjacentes (cima, baixo, esquerda, direita)
+            adjacents = [
+                (i-1, j) if i > 0 else None,  # Cima
+                (i+1, j) if i < self.grid_size[0] - 1 else None,  # Baixo
+                (i, j-1) if j > 0 else None,  # Esquerda
+                (i, j+1) if j < self.grid_size[1] - 1 else None  # Direita
+            ]
+            for pos in adjacents:
+                if pos:
+                    forbidden_positions.add(pos)
+
+        # Adiciona os próprios caixas e o carrinho às posições proibidas
+        forbidden_positions.update(self.cashiers)
+        forbidden_positions.add(self.start)
+
+        # Gera posições possíveis para produtos e empilhadeira
         possible = [(i, j) for i in range(self.grid_size[0]) for j in range(self.grid_size[1])
-                    if (i, j) not in [self.start] + self.cashiers]
-        # Aumentado para 15 bloqueios
-        self.blocked = random.sample(possible, 15)
+                    if (i, j) not in forbidden_positions]
+
+        # Gera 15 produtos (📦)
+        if len(possible) >= 16:  # Garante espaço para produtos e empilhadeira
+            self.blocked = random.sample(possible, 15)
+            # Atualiza posições possíveis removendo os produtos já colocados
+            possible = [(i, j) for i, j in possible if (i, j) not in self.blocked]
+            # Gera 1 empilhadeira (🚜) em um corredor (coluna ímpar)
+            corridor_positions = [(i, j) for i, j in possible if j % 2 == 1 and 2 <= i <= 5]
+            if corridor_positions:
+                self.forklifts = random.sample(corridor_positions, 1)
+
         self.generate_graph()
         self.draw_market()
-        self.result_label.config(text="Produtos adicionados às prateleiras!")
-        print("Produtos adicionados às prateleiras!")
+        self.result_label.config(text="Produtos e empilhadeira adicionados!")
+        print("Produtos e empilhadeira adicionados!")
 
     def move_cart_random(self):
-        """Move o carrinho para uma posição aleatória que não seja bloqueada ou um caixa."""
+        """Move o carrinho para uma posição aleatória que não seja bloqueada, empilhadeira ou um caixa."""
         possible = [(i, j) for i in range(self.grid_size[0]) for j in range(self.grid_size[1])
-                    if (i, j) not in self.blocked + self.cashiers]
+                    if (i, j) not in self.blocked and (i, j) not in self.forklifts and (i, j) not in self.cashiers]
         if possible:
             self.start = random.choice(possible)
             self.draw_market()
@@ -112,17 +143,14 @@ class MarketApp:
 
     def move_cart(self, event):
         """Move o carrinho para a posição clicada se esta for válida."""
-        # Converte coordenadas do clique para índices da grade
         col = (event.x - 10) // self.cell_size
         row = (event.y - 10) // self.cell_size
         
-        # Verifica se é uma posição válida dentro da grade
         if 0 <= row < self.grid_size[0] and 0 <= col < self.grid_size[1]:
             position = (row, col)
-            # Verifica se a posição não é bloqueada ou um caixa
-            if position not in self.blocked and position not in self.cashiers:
+            if position not in self.blocked and position not in self.forklifts and position not in self.cashiers:
                 self.start = position
-                self.path = None  # Limpa o caminho atual
+                self.path = None
                 self.draw_market()
                 self.result_label.config(text=f"Carrinho movido para {position}!")
                 print(f"Carrinho movido para {position}!")
@@ -131,36 +159,50 @@ class MarketApp:
                 print("Não é possível mover para essa posição!")
 
     def draw_market(self):
-        """Desenha o grid do mercado no canvas com tema de supermercado."""
+        """Desenha o grid do mercado no canvas com tema de supermercado, corredores e paredes entre caixas."""
         self.canvas.delete("all")
         rows, cols = self.grid_size
         for i in range(rows):
             for j in range(cols):
                 x1, y1 = j * self.cell_size + 10, i * self.cell_size + 10
                 x2, y2 = x1 + self.cell_size, y1 + self.cell_size
+                # Define corredores (colunas 2, 5, 8 com 4 blocos de altura)
+                if (j == 2 or j == 5 or j == 8) and 2 <= i <= 5:
+                    fill_color = "#8B4513"  # Marrom para corredores
+                else:
+                    fill_color = "#E0E0E0"  # Cinza claro para áreas externas
                 if (i, j) == self.start:
-                    # Draw cart icon for start
+                    # Desenha o carrinho
                     self.canvas.create_rectangle(x1, y1, x2, y2, fill="#4CAF50", outline="#388E3C", width=2)
                     self.canvas.create_text((x1 + x2) / 2, (y1 + y2) / 2, text="🛒", font=("Arial", 20))
                 elif (i, j) in self.cashiers:
-                    # Draw cashier counter
+                    # Desenha o caixa
                     self.canvas.create_rectangle(x1, y1, x2, y2, fill="#2196F3", outline="#1976D2", width=2)
                     self.canvas.create_text((x1 + x2) / 2, (y1 + y2) / 2, text="💳", font=("Arial", 20))
                 elif (i, j) in self.blocked:
-                    # Draw product shelves
+                    # Desenha produtos
                     self.canvas.create_rectangle(x1, y1, x2, y2, fill="#FF9800", outline="#F57C00", width=2)
                     self.canvas.create_text((x1 + x2) / 2, (y1 + y2) / 2, text="📦", font=("Arial", 20))
+                elif (i, j) in self.forklifts:
+                    # Desenha empilhadeira
+                    self.canvas.create_rectangle(x1, y1, x2, y2, fill="#B0BEC5", outline="#78909C", width=2)
+                    self.canvas.create_text((x1 + x2) / 2, (y1 + y2) / 2, text="🚜", font=("Arial", 20))
                 else:
-                    # Draw aisle floor
-                    self.canvas.create_rectangle(x1, y1, x2, y2, fill="#E0E0E0", outline="#B0B0B0", width=1)
+                    # Desenha chão do corredor ou área externa
+                    self.canvas.create_rectangle(x1, y1, x2, y2, fill=fill_color, outline="#B0B0B0", width=1)
                     self.canvas.create_text((x1 + x2) / 2, (y1 + y2) / 2, text=f"{i},{j}", 
                                             font=("Arial", 8), fill="#666666")
+
+        # Desenha paredes verticais entre os caixas
+        for j in range(1, len(self.cashiers)):
+            x_wall = (self.cashiers[j][1] * self.cell_size) + 10
+            self.canvas.create_line(x_wall, 9 * self.cell_size + 10, x_wall, 10 * self.cell_size + 10,
+                                    fill="#444444", width=3)
 
     def animate_path(self):
         """Anima o caminho desenhando passo a passo."""
         if self.path and self.current_step < len(self.path):
             if self.current_step > 0:
-                # Draw path segment
                 prev = self.path[self.current_step - 1]
                 curr = self.path[self.current_step]
                 x1 = prev[1] * self.cell_size + self.cell_size // 2 + 10
@@ -183,7 +225,6 @@ class MarketApp:
         self.draw_market()
         start_time = time.time()
         
-        # Chamada aos algoritmos importados
         if algorithm == bfs:
             self.path, cashier = bfs(self.graph, self.start, set(self.cashiers))
             algorithm_name = "BFS"
@@ -191,7 +232,7 @@ class MarketApp:
             self.path, cashier = dfs(self.graph, self.start, set(self.cashiers))
             algorithm_name = "DFS"
             
-        elapsed = (time.time() - start_time) * 1000  # Tempo em ms
+        elapsed = (time.time() - start_time) * 1000
         
         if self.path:
             steps = len(self.path) - 1
@@ -216,6 +257,7 @@ class MarketApp:
     def reset(self):
         """Reseta o mercado, removendo bloqueios e recriando o grafo."""
         self.blocked = []
+        self.forklifts = []
         self.path = None
         self.current_step = 0
         self.generate_graph()
