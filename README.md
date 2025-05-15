@@ -1,8 +1,7 @@
 # SmartQueue Market - Gestor de Filas Inteligentes
 
 <div align="center">
-  <img src="Blue and Purple Illustrative Brain Tech Artificial Intelligence Logo.png" 
-    alt="SmartQueue Market Logo" width="300">
+  ![alt](Blue%20and%20Purple%20Illustrative%20Brain%20Tech%20Artificial%20Intelligence%20Logo.png)
 </div>
 
 ## 📋 Índice
