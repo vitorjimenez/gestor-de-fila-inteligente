@@ -29,7 +29,7 @@ O sistema permite:
 
 ## ✨ Funcionalidades
 
-- **Modelagem Completa**: Representação do mercado como um grafo em estrutura 5x5
+- **Modelagem Completa**: Representação do mercado como um grafo em estrutura 10x10
 - **Algoritmos de Busca**:
   - 🔍 **Busca em Largura (BFS)** - Encontra o caminho mais curto até o caixa disponível
   - 🔎 **Busca em Profundidade (DFS)** - Explora rotas alternativas em caso de obstáculos
