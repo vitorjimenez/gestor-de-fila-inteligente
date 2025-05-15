@@ -149,11 +149,11 @@ python -m unittest tests/test_dfs.py
 | 2 | Seleção dos algoritmos (BFS/DFS) | 30/04/2025 | ✅ Concluído |
 | 3 | Escolha das tecnologias | 05/05/2025 | ✅ Concluído |
 | 4 | Criação da estrutura de pastas | 10/05/2025 | ✅ Concluído |
-| 5 | Implementação do grafo (market_graph) | 20/05/2025 | ✅ Concluído |
-| 6 | Implementação de BFS e DFS | 25/05/2025 | ✅ Concluído |
-| 7 | Implementação da interface gráfica | 30/05/2025 | ✅ Concluído |
-| 8 | Testes e validação | 05/06/2025 | ✅ Concluído |
-| 9 | Documentação e apresentação | 10/06/2025 | ✅ Concluído |
+| 5 | Implementação do grafo (market_graph) | 10/05/2025 | ✅ Concluído |
+| 6 | Implementação de BFS e DFS | 12/05/2025 | ✅ Concluído |
+| 7 | Implementação da interface gráfica | 13/05/2025 | ✅ Concluído |
+| 8 | Testes e validação | 13/06/2025 | ✅ Concluído |
+| 9 | Documentação e apresentação | 15/06/2025 | ✅ Concluído |
 
 ## 👥 Equipe
 
