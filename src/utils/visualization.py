@@ -28,6 +28,7 @@ class MarketApp:
         self.forklifts = []  # Empilhadeiras (🚜)
         self.path = None  # Caminho do carrinho
         self.current_step = 0
+        self.corridor_positions = [(i, j) for i in range(2, 8) for j in (2, 5, 8)]
         # Lista para armazenar resultados de desempenho
         self.performance_results = []
 
@@ -78,7 +79,7 @@ class MarketApp:
         self.graph = MarketGraph()
         rows, cols = self.grid_size
         # Define os corredores marrons (colunas 2, 5, 8, linhas 2 a 5)
-        corridor_positions = [(i, j) for i in range(2, 6) for j in (2, 5, 8)]
+        corridor_positions = [(i, j) for i in range(2, 8) for j in (2, 5, 8)]
 
         for i in range(rows):
             for j in range(cols):
@@ -143,9 +144,13 @@ class MarketApp:
         print("Produtos e empilhadeiras adicionados!")
 
     def move_cart_random(self):
+        corridor_positions = [(i, j) for i in range(2, 6) for j in (2, 5, 8)]
         """Move o carrinho para uma posição aleatória que não seja bloqueada, empilhadeira ou um caixa."""
         possible = [(i, j) for i in range(self.grid_size[0]) for j in range(self.grid_size[1])
-                    if (i, j) not in self.blocked and (i, j) not in self.forklifts and (i, j) not in self.cashiers]
+                    if (i, j) not in self.blocked 
+                    and (i, j) not in self.forklifts 
+                    and (i, j) not in self.cashiers
+                    and (i, j) not in self.corridor_positions]
         if possible:
             self.start = random.choice(possible)
             self.draw_market()
