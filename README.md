@@ -16,7 +16,6 @@
 - [Cronograma de Desenvolvimento](#cronograma-de-desenvolvimento)
 - [Equipe](#equipe)
 - [Contribuição](#contribuição)
-- [Licença](#licença)
 
 ## 📝 Visão Geral
 
@@ -115,16 +114,18 @@ python -m unittest tests/test_dfs.py
 
 ## 🖥️ Como Usar
 
-1. Ao iniciar o programa, uma interface gráfica é exibida com a representação do mercado em grade 5x5
-2. O cliente sempre inicia na posição (0,0), indicada em verde 🟩
-3. Os caixas estão localizados nas posições (4,4), (4,0) e (0,4), indicados em azul 🔵
-4. Bloqueios aleatórios são gerados, representando filas cheias ou áreas interditadas, indicados em vermelho 🔴
-5. Selecione o algoritmo de busca desejado (BFS ou DFS)
-6. O caminho calculado será mostrado em amarelo 🟡
-7. Informações sobre o percurso são exibidas:
-   - Número de passos necessários
-   - Qual caixa foi alcançado
-   - Tempo de execução do algoritmo
+1. Ao iniciar o programa, uma interface gráfica é exibida com a representação do mercado em uma grade 10x10.
+2. O carrinho de supermercado sempre inicia na posição (0, 0), indicado em verde claro (🛒).
+3. Os caixas estão localizados nas posições (9, 0), (9, 2), (9, 4), (9, 6) e (9, 9), indicados em azul (💳).
+4. Bloqueios aleatórios (10 produtos 📦 em laranja) e 2 empilhadeiras (🚜 em cinza) são gerados fora dos corredores marrons, representando filas cheias ou áreas interditadas.
+5. Os corredores marrons estão nas colunas 2, 5 e 8, nas linhas 2 a 5, e não podem ser cruzados pelos caminhos calculados.
+6. Clique em "Adicionar Produtos" para gerar os bloqueios e empilhadeiras aleatoriamente.
+7. Clique em "Mover Carrinho (Aleatório)" ou clique em uma célula livre para reposicionar o carrinho.
+8. Selecione o algoritmo de busca desejado:
+    ° "Navegar com BFS" para executar a busca em largura. Se um caminho for encontrado, a busca em profundidade (DFS) será executada automaticamente após a animação do BFS.
+    ° "Navegar com DFS" para executar a busca em profundidade manualmente.
+9. O caminho calculado será mostrado em amarelo (🟡), garantindo que não passe pelos corredores marrons, e a animação será exibida passo a passo até o caixa.
+10. Clique em "Resetar Mercado" para limpar os bloqueios, empilhadeiras e reiniciar o carrinho na posição (0, 0).
 
 ## 🧮 Algoritmos Implementados
 
@@ -148,11 +149,11 @@ python -m unittest tests/test_dfs.py
 | 2 | Seleção dos algoritmos (BFS/DFS) | 30/04/2025 | ✅ Concluído |
 | 3 | Escolha das tecnologias | 05/05/2025 | ✅ Concluído |
 | 4 | Criação da estrutura de pastas | 10/05/2025 | ✅ Concluído |
-| 5 | Implementação do grafo (market_graph) | 20/05/2025 | 🔜 A fazer |
-| 6 | Implementação de BFS e DFS | 25/05/2025 | 🔜 A fazer |
-| 7 | Implementação da interface gráfica | 30/05/2025 | 🔜 A fazer |
-| 8 | Testes e validação | 05/06/2025 | 🔜 A fazer |
-| 9 | Documentação e apresentação | 10/06/2025 | 🔜 A fazer |
+| 5 | Implementação do grafo (market_graph) | 20/05/2025 | ✅ Concluído |
+| 6 | Implementação de BFS e DFS | 25/05/2025 | ✅ Concluído |
+| 7 | Implementação da interface gráfica | 30/05/2025 | ✅ Concluído |
+| 8 | Testes e validação | 05/06/2025 | ✅ Concluído |
+| 9 | Documentação e apresentação | 10/06/2025 | ✅ Concluído |
 
 ## 👥 Equipe
 
@@ -175,6 +176,4 @@ Contribuições são bem-vindas! Para contribuir:
 4. Push para a branch (`git push origin feature/nova-funcionalidade`)
 5. Abra um Pull Request
 
-## 📄 Licença
 
-Este projeto está licenciado sob os termos da licença MIT. Veja o arquivo LICENSE para mais detalhes.
