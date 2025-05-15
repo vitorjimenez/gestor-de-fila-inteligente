@@ -1,126 +1,60 @@
-# 🧠 SmartQueue Market - Gestor de Filas Inteligentes
+SmartQueue Market - Gestor de Filas Inteligentes
+<div align="center">
+  <img src="[Insira o caminho da logo aqui]" alt="SmartQueue Market Logo" width="300">
+</div>
+📋 Índice
 
-Simulador de um mercado inteligente modelado como grafo, com interface gráfica interativa e algoritmos de busca (BFS e DFS) para otimização do atendimento ao cliente.
+Visão Geral
+Funcionalidades
+Tecnologias Utilizadas
+Estrutura do Projeto
+Requisitos
+Instalação e Execução
+Como Usar
+Algoritmos Implementados
+Cronograma de Desenvolvimento
+Equipe
+Contribuição
+Licença
 
----
+📝 Visão Geral
+O SmartQueue Market é um simulador avançado para otimização de filas em supermercados, utilizando estrutura de grafos e algoritmos de busca para proporcionar uma experiência mais eficiente aos clientes. Este sistema modela o ambiente de um supermercado como um grafo, onde cada nó representa uma posição no espaço e as arestas indicam os possíveis deslocamentos.
+O sistema permite:
 
-## 📌 Descrição
+Localizar o caminho mais eficiente até o caixa com menos fila
+Simular obstáculos e áreas congestionadas
+Visualizar graficamente o deslocamento ideal dentro do mercado
+Comparar a eficiência entre diferentes algoritmos de busca
 
-Este projeto simula um **mercado inteligente** modelado como um **grafo**, utilizando os algoritmos:
+✨ Funcionalidades
 
-- 🔍 **Busca em Largura (BFS)** – para encontrar o caminho mais curto até um caixa.
-- 🔍 **Busca em Profundidade (DFS)** – para explorar rotas alternativas.
+Modelagem Completa: Representação do mercado como um grafo em estrutura 5x5
+Algoritmos de Busca:
 
-A interface gráfica foi desenvolvida com **Tkinter**, permitindo a visualização:
-
-- Do mercado em forma de grade 5x5;
-- Dos caminhos calculados;
-- De bloqueios aleatórios que simulam filas cheias ou áreas interditadas.
-
----
-
-## 🗂️ Estrutura do Projeto
-
-project_grafos/
-├── src/
-│ ├── algorithms/
-│ │ ├── bfs.py # Implementação do algoritmo BFS
-│ │ └── dfs.py # Implementação do algoritmo DFS
-│ ├── data/
-│ │ └── market_graph.py # Classe base para o grafo do mercado
-│ ├── utils/
-│ │ └── visualization.py # Interface gráfica e lógica de simulação
-│ └── main.py # Ponto de entrada do programa
-│
-├── tests/
-│ ├── test_bfs.py # Testes unitários para BFS
-│ └── test_dfs.py # Testes unitários para DFS
-│
-├── requirements.txt # Dependências do projeto
-└── README.md # Documentação
-
----
-
-## 📦 Requisitos
-
-- **Python**: 3.6 ou superior  
-- **Bibliotecas**:
-  - `tkinter` (inclusa no Python padrão)
-  - `collections` (para filas no BFS)
-  - `random` (para bloqueios aleatórios)
-  - `time` (para medir desempenho)
-  - `unittest` (para testes unitários)
-- **Ferramentas recomendadas**: VSCode, Git
-
----
-
-## 🚀 Como Instalar e Executar
-
-### 2. Verifique o Python:
-
-```bash
-python --version
-
-### 3.1 Execute o programa:
-python src/main.py ou python -m src.main
-💡 Uma janela gráfica será aberta com o simulador de filas.
-
-### 4.1 Execute os testes unitários:
-python -m unittest tests/test_bfs.py
-python -m unittest tests/test_dfs.py
+🔍 Busca em Largura (BFS) - Encontra o caminho mais curto até o caixa disponível
+🔎 Busca em Profundidade (DFS) - Explora rotas alternativas em caso de obstáculos
 
 
-### 1. Clone o repositório:
+Interface Gráfica Interativa:
 
-```bash
-git clone https://github.com/vitorjimenez/gestor-de-fila-inteligente.git
-cd project_grafos
-🧩 Funcionalidades
-✅ Modelagem de um mercado 5x5 como grafo (vértices e arestas)
+Visualização do mercado em forma de grade
+Representação visual dos caminhos calculados
+Simulação de bloqueios aleatórios (filas cheias ou áreas interditadas)
 
-✅ Caminho mais curto com BFS
 
-✅ Exploração alternativa com DFS
+Análise de Desempenho:
 
-✅ Interface gráfica com visualização:
+Comparação de eficiência entre algoritmos
+Medição de tempo de execução
+Contagem de passos necessários para chegar ao destino
 
-🟩 Início: posição (0,0)
 
-🔵 Caixas: (4,4), (4,0), (0,4)
 
-🔴 Bloqueios: 5 aleatórios
+🛠️ Tecnologias Utilizadas
 
-🟡 Caminhos: rota percorrida
+Python 3.6+: Linguagem principal do projeto
+Tkinter: Framework para desenvolvimento da interface gráfica
+Estruturas de Dados Avançadas: Implementação de grafos, filas e pilhas
+Algoritmos de Busca: BFS e DFS otimizados para o contexto de filas
 
-✅ Geração aleatória de bloqueios simulando filas
-
-✅ Feedback ao usuário com:
-
-Número de passos
-
-Caixa alcançado
-
-Tempo de execução
-
-📆 Cronograma de Execução
-Etapa	Atividades	Prazo	Status
-1	Definir o objetivo	24/04/2025	✅ Concluído
-2	Seleção dos algoritmos (BFS/DFS)	30/04/2025	✅ Concluído
-3	Escolha das tecnologias	05/05/2025	✅ Concluído
-4	Criação da estrutura de pastas	10/05/2025	✅ Concluído
-5	Implementação do grafo (market_graph)	20/05/2025	🔜 A fazer
-6	Implementação de BFS e DFS	25/05/2025	🔜 A fazer
-7	Implementação da interface gráfica	30/05/2025	🔜 A fazer
-8	Testes e validação	05/06/2025	🔜 A fazer
-9	Documentação e apresentação	10/06/2025	🔜 A fazer
-
-👥 Integrantes
-Nicolas Santana – Gerente de Projeto
-Definição do escopo, planejamento e acompanhamento
-
-Vinicius Cerqueira – Desenvolvedor Backend
-Modelagem do grafo, algoritmos BFS e DFS
-
-Vitor Jimenez – Desenvolvedor Frontend
-Interface gráfica com Tkinter
-
+📂 Estrutura do Projeto
