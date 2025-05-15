@@ -21,9 +21,9 @@ class MarketApp:
         self.root = root
         self.root.title("Mercado Inteligente - Navegação Otimizada")
         self.cell_size = 40
-        self.grid_size = (10, 10)
+        self.grid_size = (11, 11)
         self.start = (0, 0)  # Apenas um carrinho
-        self.cashiers = [(9, 0), (9, 2), (9, 4), (9, 6), (9, 9)]
+        self.cashiers = [(10, 1), (10, 3), (10, 5), (10, 7), (10, 9)]
         self.blocked = []  # Produtos (📦)
         self.forklifts = []  # Empilhadeiras (🚜)
         self.path = None  # Caminho do carrinho
@@ -181,7 +181,7 @@ class MarketApp:
                 x1, y1 = j * self.cell_size + 10, i * self.cell_size + 10
                 x2, y2 = x1 + self.cell_size, y1 + self.cell_size
                 # Define corredores (colunas 2, 5, 8 com 4 blocos de altura)
-                if (j == 2 or j == 5 or j == 8) and 2 <= i <= 5:
+                if (j == 2 or j == 5 or j == 8) and 2 <= i <= 7:
                     fill_color = "#8B4513"  # Marrom para corredores
                 else:
                     fill_color = "#E0E0E0"  # Cinza claro para áreas externas
@@ -208,10 +208,10 @@ class MarketApp:
                                             font=("Arial", 8), fill="#666666")
 
         # Desenha paredes verticais entre os caixas
-        for j in range(1, len(self.cashiers)):
-            x_wall = (self.cashiers[j][1] * self.cell_size) + 10
-            self.canvas.create_line(x_wall, 9 * self.cell_size + 10, x_wall, 10 * self.cell_size + 10,
-                                    fill="#444444", width=3)
+        # for j in range(1, len(self.cashiers)):
+        #     x_wall = (self.cashiers[j][1] * self.cell_size) + 10
+        #     self.canvas.create_line(x_wall, 9 * self.cell_size + 10, x_wall, 10 * self.cell_size + 10,
+        #                             fill="#444444", width=3)
 
     def animate_path(self):
         """Anima o caminho desenhando passo a passo até o final."""
