@@ -121,7 +121,7 @@ class MarketApp:
         forbidden_positions.add(self.start)
 
         # Define os corredores (colunas 2, 5, 8, linhas 2 a 5) como posições proibidas para produtos e empilhadeiras
-        corridor_positions = [(i, j) for i in range(2, 6) for j in (2, 5, 8)]
+        corridor_positions = [(i, j) for i in range(2, 8) for j in (2, 5, 8)]
 
         # Gera posições possíveis para produtos e empilhadeiras (excluindo corredores)
         possible_positions = [(i, j) for i in range(self.grid_size[0]) for j in range(self.grid_size[1])
