@@ -28,6 +28,8 @@ class MarketApp:
         self.forklifts = []  # Empilhadeiras (🚜)
         self.path = None  # Caminho do carrinho
         self.current_step = 0
+        # Lista para armazenar resultados de desempenho
+        self.performance_results = []
 
         # Configura a interface gráfica
         self._setup_ui()
@@ -59,7 +61,8 @@ class MarketApp:
             ("Navegar com DFS", self.run_dfs, "#2196F3", "white"),
             ("Adicionar Produtos", self.generate_random_blocks, "#FF9800", "white"),
             ("Mover Carrinho (Aleatório)", self.move_cart_random, "#9C27B0", "white"),
-            ("Resetar Mercado", self.reset, "#F44336", "white")
+            ("Resetar Mercado", self.reset, "#F44336", "white"),
+            ("Mostrar Análise de Desempenho", self.show_performance_analysis, "#607D8B", "white")  # Novo botão
         ]
         for text, command, bg, fg in buttons:
             tk.Button(btn_frame, text=text, command=command, bg=bg, fg=fg,
@@ -249,6 +252,15 @@ class MarketApp:
             msg = f"{algorithm_name}: {steps} passos até o caixa {cashier}, {elapsed:.2f}ms"
             print(msg + f": {self.path}")
             self.result_label.config(text=msg)
+            # Armazena o resultado para análise
+            self.performance_results.append({
+                "algorithm": algorithm_name,
+                "steps": steps,
+                "time_ms": elapsed,
+                "start": self.start,
+                "cashier": cashier,
+                "path": self.path
+            })
             self.current_step = 0
             self.animate_path()
             return self.path, cashier
@@ -273,6 +285,50 @@ class MarketApp:
         print("Iniciando DFS...")
         self.run_search(dfs)
 
+    def show_performance_analysis(self):
+        """Exibe uma análise de desempenho comparando BFS e DFS."""
+        if not self.performance_results:
+            self.result_label.config(text="Nenhum resultado de desempenho disponível!")
+            print("Nenhum resultado de desempenho disponível!")
+            return
+
+        # Separa resultados por algoritmo
+        bfs_results = [r for r in self.performance_results if r["algorithm"] == "BFS"]
+        dfs_results = [r for r in self.performance_results if r["algorithm"] == "DFS"]
+
+        # Calcula médias
+        bfs_avg_steps = sum(r["steps"] for r in bfs_results) / len(bfs_results) if bfs_results else 0
+        bfs_avg_time = sum(r["time_ms"] for r in bfs_results) / len(bfs_results) if bfs_results else 0
+        dfs_avg_steps = sum(r["steps"] for r in dfs_results) / len(dfs_results) if dfs_results else 0
+        dfs_avg_time = sum(r["time_ms"] for r in dfs_results) / len(dfs_results) if dfs_results else 0
+
+        # Monta a mensagem de análise
+        analysis_msg = (
+            "Análise de Desempenho:\n"
+            f"BFS - Média de Passos: {bfs_avg_steps:.2f}, Média de Tempo: {bfs_avg_time:.2f}ms\n"
+            f"DFS - Média de Passos: {dfs_avg_steps:.2f}, Média de Tempo: {dfs_avg_time:.2f}ms\n"
+            f"Total de Execuções: BFS ({len(bfs_results)}), DFS ({len(dfs_results)})"
+        )
+
+        # Exibe no terminal
+        print(analysis_msg)
+
+        # Exibe na interface gráfica
+        self.result_label.config(text=analysis_msg.replace("\n", " | "))
+
+        # Opcional: Exibe uma janela com detalhes de cada execução
+        details_window = tk.Toplevel(self.root)
+        details_window.title("Detalhes de Desempenho")
+        details_text = tk.Text(details_window, height=20, width=80)
+        details_text.pack(padx=10, pady=10)
+        details_text.insert(tk.END, "Detalhes de Cada Execução:\n\n")
+        for i, result in enumerate(self.performance_results, 1):
+            details_text.insert(tk.END, f"Execução {i} ({result['algorithm']}):\n")
+            details_text.insert(tk.END, f"  Início: {result['start']}, Caixa: {result['cashier']}\n")
+            details_text.insert(tk.END, f"  Passos: {result['steps']}, Tempo: {result['time_ms']:.2f}ms\n")
+            details_text.insert(tk.END, f"  Caminho: {result['path']}\n\n")
+        details_text.config(state=tk.DISABLED)
+
     def reset(self):
         """Reseta o mercado, removendo bloqueios e recriando o grafo."""
         self.start = (0, 0)
@@ -280,6 +336,7 @@ class MarketApp:
         self.forklifts = []
         self.path = None
         self.current_step = 0
+        self.performance_results = []  # Limpa os resultados de desempenho
         self.generate_graph()
         self.draw_market()
         self.result_label.config(text="Mercado resetado! Pronto para nova navegação.")
