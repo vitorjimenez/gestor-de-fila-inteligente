@@ -28,6 +28,7 @@ class MarketApp:
         self.forklifts = []  # Empilhadeiras (🚜)
         self.path = None  # Caminho do carrinho
         self.current_step = 0
+        self.is_animating = False  # Controle para animação
         self.corridor_positions = [(i, j) for i in range(2, 8) for j in (2, 5, 8)]
         # Lista para armazenar resultados de desempenho
         self.performance_results = []
@@ -63,7 +64,7 @@ class MarketApp:
             ("Adicionar Produtos", self.generate_random_blocks, "#FF9800", "white"),
             ("Mover Carrinho (Aleatório)", self.move_cart_random, "#9C27B0", "white"),
             ("Resetar Mercado", self.reset, "#F44336", "white"),
-            ("Mostrar Análise de Desempenho", self.show_performance_analysis, "#607D8B", "white")  # Novo botão
+            ("Mostrar Análise de Desempenho", self.show_performance_analysis, "#607D8B", "white")
         ]
         for text, command, bg, fg in buttons:
             tk.Button(btn_frame, text=text, command=command, bg=bg, fg=fg,
@@ -209,18 +210,11 @@ class MarketApp:
                 else:
                     # Desenha chão do corredor ou área externa
                     self.canvas.create_rectangle(x1, y1, x2, y2, fill=fill_color, outline="#B0B0B0", width=1)
-                    self.canvas.create_text((x1 + x2) / 2, (y1 + y2) / 2, text=f"{i},{j}", 
-                                            font=("Arial", 8), fill="#666666")
-
-        # Desenha paredes verticais entre os caixas
-        # for j in range(1, len(self.cashiers)):
-        #     x_wall = (self.cashiers[j][1] * self.cell_size) + 10
-        #     self.canvas.create_line(x_wall, 9 * self.cell_size + 10, x_wall, 10 * self.cell_size + 10,
-        #                             fill="#444444", width=3)
 
     def animate_path(self):
         """Anima o caminho desenhando passo a passo até o final."""
         if self.path and self.current_step < len(self.path) - 1:  # Desenha até o último passo
+            self.is_animating = True  # Indica que a animação está em andamento
             prev = self.path[self.current_step]
             curr = self.path[self.current_step + 1]
             x1 = prev[1] * self.cell_size + self.cell_size // 2 + 10
@@ -232,6 +226,7 @@ class MarketApp:
             self.root.after(200, self.animate_path)
         else:
             self.current_step = 0  # Reinicia para a próxima animação
+            self.is_animating = False  # Indica que a animação terminou
 
     def run_search(self, algorithm):
         """
@@ -240,7 +235,9 @@ class MarketApp:
         Args:
             algorithm: Função de busca (bfs ou dfs)
         """
-        self.draw_market()
+        # Só redesenha o mercado se não houver animação em andamento
+        if not self.is_animating:
+            self.draw_market()
         start_time = time.time()
         
         if algorithm == bfs:
@@ -341,6 +338,7 @@ class MarketApp:
         self.forklifts = []
         self.path = None
         self.current_step = 0
+        self.is_animating = False  # Reseta o controle de animação
         self.performance_results = []  # Limpa os resultados de desempenho
         self.generate_graph()
         self.draw_market()
