@@ -69,6 +69,26 @@ gestor-de-fila-inteligente/
 └── README.md                     # Documentação
 ```
 
+## 🌐 Estrutura do Grafo
+
+O mercado é modelado como um grafo para representar o espaço de navegação do carrinho. Aqui estão os detalhes:
+
+- **Vértices**:
+  - Representam posições acessíveis no mercado, ou seja, cada célula da grade 11x11 que não está bloqueada por corredores marrons, produtos ou empilhadeiras.
+  - No código, cada vértice é uma tupla `(i, j)`, onde `i` é a linha e `j` é a coluna (ex.: `(0, 0)` para o canto superior esquerdo).
+  - São criados no método `generate_graph` do arquivo `visualization.py`, onde posições em `corridor_positions`, `self.blocked` ou `self.forklifts` são excluídas.
+
+- **Arestas**:
+  - Representam os movimentos possíveis entre vértices adjacentes, permitindo deslocamentos para baixo ou para a direita.
+  - São definidas como conexões entre dois vértices `(i1, j1)` e `(i2, j2)` se ambos forem acessíveis e não houver bloqueios entre eles.
+  - São criadas no mesmo método `generate_graph`, adicionando arestas para baixo (se `i < rows - 1`) e para a direita (se `j < cols - 1`), usando `self.graph.add_edge`.
+
+- **Criação no Script**:
+  - O grafo é gerado dinamicamente no método `generate_graph`:
+    - Itera sobre todas as posições da grade.
+    - Verifica se a posição atual e a próxima (abaixo ou à direita) não estão em áreas bloqueadas.
+    - Adiciona as arestas ao dicionário `self.graph` na classe `MarketGraph`, que armazena os vértices e suas conexões.
+
 ## 📋 Requisitos
 
 - **Python**: 3.6 ou superior
