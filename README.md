@@ -114,6 +114,9 @@ python -m unittest tests/test_dfs.py
 
 ## 🖥️ Como Usar
 
+- **Fluxo principal do projeto**: Pequeno fluxograma indicando o fluxo principal do projeto
+<img src="./images/fluxo-aplicacao.png" alt="Fluxograma exemplificando o fluxo principal do aplicativo">
+
 1. Ao iniciar o programa, uma interface gráfica é exibida com a representação do mercado em uma grade 10x10.
 2. O carrinho de supermercado sempre inicia na posição (0, 0), indicado em verde claro (🛒).
 3. Os caixas estão localizados nas posições (9, 0), (9, 2), (9, 4), (9, 6) e (9, 9), indicados em azul (💳).
