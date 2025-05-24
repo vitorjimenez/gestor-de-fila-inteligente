@@ -116,8 +116,8 @@ python -m unittest tests/test_dfs.py
 
 | Nome | GitHub | Função |
 |------|--------|--------|
-| Nicolas Santana | [@nicolas](https://github.com/nicolas) | Gerente de Projeto |
-| Vinicius Cerqueira | [@vinicius](https://github.com/vinicius) | Desenvolvedor Backend |
+| Nicolas Santana | [@nicolas](https://github.com/nicolassantana42) | Gerente de Projeto |
+| Vinicius Cerqueira | [@vinicius](https://github.com/ViniCerqueira/ViniCerqueira) | Desenvolvedor Backend |
 | Vitor Jimenez | [@vitorjimenez](https://github.com/vitorjimenez) | Desenvolvedor Frontend |
 
 ---
