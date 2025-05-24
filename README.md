@@ -1,121 +1,73 @@
-# SmartQueue Market - Gestor de Filas Inteligentes
+# 🚀 SmartQueue Market - Gestor de Filas Inteligentes
 
-<div align="center">
-  <img src="./images/Logo.png" width=250px height=250px>
-</div>
+**Resumo:** Sistema simulador avançado para otimização de filas em supermercados que utiliza estrutura de grafos e algoritmos de busca (BFS e DFS) para encontrar o caminho mais eficiente até o caixa com menor fila, proporcionando uma experiência mais eficiente aos clientes através de visualização gráfica interativa.
 
-## 📋 Índice
-- [Visão Geral](#visão-geral)
-- [Funcionalidades](#funcionalidades)
-- [Tecnologias Utilizadas](#tecnologias-utilizadas)
-- [Estrutura do Projeto](#estrutura-do-projeto)
-- [Requisitos](#requisitos)
-- [Instalação e Execução](#instalação-e-execução)
-- [Como Usar](#como-usar)
-- [Algoritmos Implementados](#algoritmos-implementados)
-- [Cronograma de Desenvolvimento](#cronograma-de-desenvolvimento)
-- [Equipe](#equipe)
-- [Contribuição](#contribuição)
+---
 
-## 📝 Visão Geral
+## 🎯 Objetivo
 
-O **SmartQueue Market** é um simulador avançado para otimização de filas em supermercados, utilizando estrutura de grafos e algoritmos de busca para proporcionar uma experiência mais eficiente aos clientes. Este sistema modela o ambiente de um supermercado como um grafo, onde cada nó representa uma posição no espaço e as arestas indicam os possíveis deslocamentos.
+O SmartQueue Market resolve o problema de otimização de deslocamento em supermercados, modelando o ambiente como um grafo onde cada nó representa uma posição no espaço e as arestas indicam os possíveis deslocamentos. O sistema permite localizar o caminho mais eficiente até o caixa com menos fila, simular obstáculos e áreas congestionadas, e comparar a eficiência entre diferentes algoritmos de busca.
 
-O sistema permite:
-- Localizar o caminho mais eficiente até o caixa com menos fila
-- Simular obstáculos e áreas congestionadas
-- Visualizar graficamente o deslocamento ideal dentro do mercado
-- Comparar a eficiência entre diferentes algoritmos de busca
+A motivação surge da necessidade de melhorar a experiência do cliente em ambientes comerciais, reduzindo o tempo gasto em filas e otimizando o fluxo de pessoas. O projeto aplica diretamente os conceitos de estrutura de dados (grafos, filas, pilhas) e algoritmos de busca estudados na disciplina, demonstrando sua aplicação prática em problemas reais.
 
-## ✨ Funcionalidades
+---
 
-- **Modelagem Completa**: Representação do mercado como um grafo em estrutura 10x10
-- **Algoritmos de Busca**:
-  - 🔍 **Busca em Largura (BFS)** - Encontra o caminho mais curto até o caixa disponível
-  - 🔎 **Busca em Profundidade (DFS)** - Explora rotas alternativas em caso de obstáculos
-- **Interface Gráfica Interativa**:
-  - Visualização do mercado em forma de grade
-  - Representação visual dos caminhos calculados
-  - Simulação de bloqueios aleatórios (filas cheias ou áreas interditadas)
-- **Análise de Desempenho**:
-  - Comparação de eficiência entre algoritmos
-  - Medição de tempo de execução
-  - Contagem de passos necessários para chegar ao destino
+## 👨‍💻 Tecnologias Utilizadas
 
-## 🛠️ Tecnologias Utilizadas
+- **Python 3.6+** - Linguagem principal do projeto
+- **Tkinter** - Framework para desenvolvimento da interface gráfica
+- **Collections** - Para implementação de filas no BFS
+- **Random** - Para geração de bloqueios aleatórios
+- **Time** - Para medição de desempenho
+- **Unittest** - Para execução de testes unitários
+- **Estruturas de Dados Avançadas** - Implementação de grafos, filas e pilhas
+- **Algoritmos de Busca** - BFS e DFS otimizados para o contexto de filas
 
-- **Python 3.6+**: Linguagem principal do projeto
-- **Tkinter**: Framework para desenvolvimento da interface gráfica
-- **Estruturas de Dados Avançadas**: Implementação de grafos, filas e pilhas
-- **Algoritmos de Busca**: BFS e DFS otimizados para o contexto de filas
+---
 
-## 📂 Estrutura do Projeto
+## 🗂️ Estrutura do Projeto
 
 ```
-gestor-de-fila-inteligente/
-├── src/
-│   ├── algorithms/
+📦 gestor-de-fila-inteligente
+├── 📁 src
+│   ├── 📁 algorithms
 │   │   ├── bfs.py                # Implementação do algoritmo BFS
 │   │   └── dfs.py                # Implementação do algoritmo DFS
-│   ├── data/
+│   ├── 📁 data
 │   │   └── market_graph.py       # Classe base para o grafo do mercado
-│   ├── utils/
+│   ├── 📁 utils
 │   │   └── visualization.py      # Interface gráfica e lógica de simulação
 │   └── main.py                   # Ponto de entrada do programa
-├── tests/
+├── 📁 tests
 │   ├── test_bfs.py               # Testes unitários para BFS
 │   └── test_dfs.py               # Testes unitários para DFS
+├── 📁 images
+│   ├── Logo.png                  # Logo do projeto
+│   └── fluxo-aplicacao.png       # Fluxograma da aplicação
 ├── requirements.txt              # Dependências do projeto
 └── README.md                     # Documentação
 ```
 
-## 🌐 Estrutura do Grafo
+---
 
-O mercado é modelado como um grafo para representar o espaço de navegação do carrinho. Aqui estão os detalhes:
+## ⚙️ Como Executar
 
-- **Vértices**:
-  - Representam posições acessíveis no mercado, ou seja, cada célula da grade 11x11 que não está bloqueada por corredores marrons, produtos ou empilhadeiras.
-  - No código, cada vértice é uma tupla `(i, j)`, onde `i` é a linha e `j` é a coluna (ex.: `(0, 0)` para o canto superior esquerdo).
-  - São criados no método `generate_graph` do arquivo `visualization.py`, onde posições em `corridor_positions`, `self.blocked` ou `self.forklifts` são excluídas.
+### ✅ Rodando Localmente
 
-- **Arestas**:
-  - Representam os movimentos possíveis entre vértices adjacentes, permitindo deslocamentos para baixo ou para a direita.
-  - São definidas como conexões entre dois vértices `(i1, j1)` e `(i2, j2)` se ambos forem acessíveis e não houver bloqueios entre eles.
-  - São criadas no mesmo método `generate_graph`, adicionando arestas para baixo (se `i < rows - 1`) e para a direita (se `j < cols - 1`), usando `self.graph.add_edge`.
-
-- **Criação no Script**:
-  - O grafo é gerado dinamicamente no método `generate_graph`:
-    - Itera sobre todas as posições da grade.
-    - Verifica se a posição atual e a próxima (abaixo ou à direita) não estão em áreas bloqueadas.
-    - Adiciona as arestas ao dicionário `self.graph` na classe `MarketGraph`, que armazena os vértices e suas conexões.
-
-## 📋 Requisitos
-
-- **Python**: 3.6 ou superior
-- **Bibliotecas**:
-  - `tkinter` (inclusa no Python padrão)
-  - `collections` (para implementação de filas no BFS)
-  - `random` (para geração de bloqueios aleatórios)
-  - `time` (para medição de desempenho)
-  - `unittest` (para execução de testes unitários)
-- **Ferramentas recomendadas**: VSCode, Git
-
-## 🚀 Instalação e Execução
-
-### 1. Clone o repositório:
+1. Clone o repositório:
 
 ```bash
 git clone https://github.com/vitorjimenez/gestor-de-fila-inteligente.git
 cd gestor-de-fila-inteligente
 ```
 
-### 2. Verifique a versão do Python:
+2. Verifique a versão do Python (necessário 3.6+):
 
 ```bash
 python --version
 ```
 
-### 3. Execute o programa:
+3. Execute a aplicação:
 
 ```bash
 python src/main.py
@@ -123,52 +75,75 @@ python src/main.py
 python -m src.main
 ```
 
-> 💡 Uma janela gráfica será aberta com o simulador de filas.
-
-### 4. Execute os testes unitários:
+4. Para executar os testes unitários:
 
 ```bash
 python -m unittest tests/test_bfs.py
 python -m unittest tests/test_dfs.py
 ```
 
-## Fluxo principal do projeto
+> 💡 Uma janela gráfica será aberta automaticamente com o simulador de filas.
 
-- **Pequeno fluxograma indicando o fluxo principal do projeto**
-<div align="center">
-<img src="./images/fluxo-aplicacao.png" alt="Fluxograma exemplificando o fluxo principal do aplicativo" width=300px height=300px>
-<div/>
+---
 
-## 🖥️ Como Usar
+## 📸 Demonstrações
 
-1. Ao iniciar o programa, uma interface gráfica é exibida com a representação do mercado em uma grade 10x10.
-2. O carrinho de supermercado sempre inicia na posição (0, 0), indicado em verde claro (🛒).
-3. Os caixas estão localizados nas posições (9, 0), (9, 2), (9, 4), (9, 6) e (9, 9), indicados em azul (💳).
-4. Bloqueios aleatórios (10 produtos 📦 em laranja) e 2 empilhadeiras (🚜 em cinza) são gerados fora dos corredores marrons, representando filas cheias ou áreas interditadas.
-5. Os corredores marrons estão nas colunas 2, 5 e 8, nas linhas 2 a 5, e não podem ser cruzados pelos caminhos calculados.
-6. Clique em "Adicionar Produtos" para gerar os bloqueios e empilhadeiras aleatoriamente.
-7. Clique em "Mover Carrinho (Aleatório)" ou clique em uma célula livre para reposicionar o carrinho.
-8. Selecione o algoritmo de busca desejado:
-    ° "Navegar com BFS" para executar a busca em largura. Se um caminho for encontrado, a busca em profundidade (DFS) será executada automaticamente após a animação do BFS.
-    ° "Navegar com DFS" para executar a busca em profundidade manualmente.
-9. O caminho calculado será mostrado em amarelo (🟡), garantindo que não passe pelos corredores marrons, e a animação será exibida passo a passo até o caixa.
-10. Clique em "Resetar Mercado" para limpar os bloqueios, empilhadeiras e reiniciar o carrinho na posição (0, 0).
+### Funcionalidades Principais:
 
-## 🧮 Algoritmos Implementados
+- **Modelagem Completa**: Representação do mercado como um grafo em estrutura 11x11
+- **Interface Gráfica Interativa**:
+  - Visualização do mercado em forma de grade
+  - Carrinho inicia na posição (0, 0) - indicado em verde claro 🛒
+  - Caixas localizados em (9, 0), (9, 2), (9, 4), (9, 6) e (9, 9) - indicados em azul 💳
+  - Bloqueios aleatórios (produtos 📦 em laranja e empilhadeiras 🚜 em cinza)
+  - Corredores marrons nas colunas 2, 5 e 8 (linhas 2-5)
+  - Caminho calculado mostrado em amarelo 🟡
 
-### Busca em Largura (BFS)
-- Encontra o caminho mais curto até um dos caixas disponíveis
-- Explora os nós vizinhos antes de avançar para nós mais distantes
-- Ideal para encontrar o caminho com menor número de passos
-- Implementação usando estrutura de fila para controle de nós a visitar
+### Como Usar:
+1. Clique em "Adicionar Produtos" para gerar obstáculos aleatórios
+2. Use "Mover Carrinho (Aleatório)" ou clique em uma célula livre para reposicionar
+3. Selecione "Navegar com BFS" ou "Navegar com DFS" para encontrar o melhor caminho
+4. Observe a animação do caminho calculado até o caixa mais próximo
+5. Use "Resetar Mercado" para reiniciar a simulação
 
-### Busca em Profundidade (DFS)
-- Explora um caminho até sua profundidade máxima antes de retroceder
-- Útil para encontrar rotas alternativas quando caminhos diretos estão bloqueados
-- Implementação usando pilha ou recursão para controle de exploração
-- Pode não encontrar o caminho mais curto, mas é eficiente para explorar o espaço
+### Algoritmos Implementados:
+- **BFS (Busca em Largura)**: Encontra o caminho mais curto até um caixa disponível
+- **DFS (Busca em Profundidade)**: Explora rotas alternativas em caso de obstáculos
 
-## 📆 Cronograma de Desenvolvimento
+---
+
+## 👥 Equipe
+
+| Nome | GitHub | Função |
+|------|--------|--------|
+| Nicolas Santana | [@nicolas](https://github.com/nicolas) | Gerente de Projeto |
+| Vinicius Cerqueira | [@vinicius](https://github.com/vinicius) | Desenvolvedor Backend |
+| Vitor Jimenez | [@vitorjimenez](https://github.com/vitorjimenez) | Desenvolvedor Frontend |
+
+---
+
+## 🧠 Disciplinas Envolvidas
+
+- **Estrutura de Dados I** - Implementação de grafos, filas e pilhas
+- **Algoritmos de Busca** - Aplicação prática de BFS e DFS
+- **Programação Orientada a Objetos** - Modelagem das classes do sistema
+
+---
+
+## 🏫 Informações Acadêmicas
+
+- **Universidade:** Universidade Braz Cubas
+- **Curso:** Ciência da Computação
+- **Semestre:** 2º
+- **Período:** Manhã/Noite
+- **Professora orientadora:** Dra. Andréa Ono Sakai
+- **Evento:** Mostra de Tecnologia 1º Semestre de 2025
+- **Local:** Laboratório 12
+- **Datas:** 05 e 06 de junho de 2025
+
+---
+
+## 📊 Cronograma de Desenvolvimento
 
 | Etapa | Atividades | Prazo | Status |
 |-------|-----------|-------|--------|
@@ -176,31 +151,28 @@ python -m unittest tests/test_dfs.py
 | 2 | Seleção dos algoritmos (BFS/DFS) | 30/04/2025 | ✅ Concluído |
 | 3 | Escolha das tecnologias | 05/05/2025 | ✅ Concluído |
 | 4 | Criação da estrutura de pastas | 10/05/2025 | ✅ Concluído |
-| 5 | Implementação do grafo (market_graph) | 10/05/2025 | ✅ Concluído |
+| 5 | Implementação do grafo | 10/05/2025 | ✅ Concluído |
 | 6 | Implementação de BFS e DFS | 12/05/2025 | ✅ Concluído |
-| 7 | Implementação da interface gráfica | 13/05/2025 | ✅ Concluído |
+| 7 | Interface gráfica | 13/05/2025 | ✅ Concluído |
 | 8 | Testes e validação | 13/06/2025 | ✅ Concluído |
-| 9 | Documentação e apresentação | 15/06/2025 | ✅ Concluído |
+| 9 | Documentação | 15/06/2025 | ✅ Concluído |
 
-## 👥 Equipe
+---
 
-**Nicolas Santana** - Gerente de Projeto
-- Definição do escopo, planejamento e acompanhamento
+## 🔍 Detalhes Técnicos
 
-**Vinicius Cerqueira** - Desenvolvedor Backend
-- Modelagem do grafo, implementação dos algoritmos BFS e DFS
+### Estrutura do Grafo
+- **Vértices**: Representam posições acessíveis no mercado (células da grade 11x11)
+- **Arestas**: Representam movimentos possíveis entre vértices adjacentes
+- **Restrições**: Corredores marrons, produtos e empilhadeiras bloqueiam o movimento
 
-**Vitor Jimenez** - Desenvolvedor Frontend
-- Interface gráfica com Tkinter, interação com o usuário
+### Análise de Desempenho
+- Comparação de eficiência entre algoritmos BFS e DFS
+- Medição de tempo de execução
+- Contagem de passos necessários para chegar ao destino
 
-## 🤝 Contribuição
+---
 
-Contribuições são bem-vindas! Para contribuir:
+## 📄 Licença
 
-1. Faça um fork do projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/nova-funcionalidade`)
-3. Commit suas alterações (`git commit -m 'Adiciona nova funcionalidade'`)
-4. Push para a branch (`git push origin feature/nova-funcionalidade`)
-5. Abra um Pull Request
-
-
+MIT License — sinta-se à vontade para utilizar, estudar e adaptar este projeto.
