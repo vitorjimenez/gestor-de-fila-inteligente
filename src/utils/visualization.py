@@ -6,7 +6,6 @@ import random
 import time
 from src.data.market_graph import MarketGraph
 from src.algorithms.bfs import bfs
-from src.algorithms.dfs import dfs
 
 class MarketApp:
     """Classe que gerencia a interface gráfica e a simulação do mercado."""
@@ -30,7 +29,7 @@ class MarketApp:
         self.current_step = 0
         self.is_animating = False  # Controle para animação
         self.corridor_positions = [(i, j) for i in range(2, 8) for j in (2, 5, 8)]
-        # Lista para armazenar resultados de desempenho
+        # Lista para armazenar resultados de desempenho (agora apenas para BFS)
         self.performance_results = []
 
         # Configura a interface gráfica
@@ -60,7 +59,6 @@ class MarketApp:
         btn_frame.pack(fill=tk.X)
         buttons = [
             ("Navegar com BFS", self.run_bfs, "#4CAF50", "white"),
-            ("Navegar com DFS", self.run_dfs, "#2196F3", "white"),
             ("Adicionar Produtos", self.generate_random_blocks, "#FF9800", "white"),
             ("Mover Carrinho (Aleatório)", self.move_cart_random, "#9C27B0", "white"),
             ("Resetar Mercado", self.reset, "#F44336", "white"),
@@ -79,7 +77,7 @@ class MarketApp:
         """Cria o grafo do mercado com base no grid e bloqueios, excluindo corredores marrons."""
         self.graph = MarketGraph()
         rows, cols = self.grid_size
-        # Define os corredores marrons (colunas 2, 5, 8, linhas 2 a 5)
+        # Define os corredores marrons (colunas 2, 5, 8, linhas 2 a 7)
         corridor_positions = [(i, j) for i in range(2, 8) for j in (2, 5, 8)]
 
         for i in range(rows):
@@ -122,7 +120,7 @@ class MarketApp:
         forbidden_positions.update(self.cashiers)
         forbidden_positions.add(self.start)
 
-        # Define os corredores (colunas 2, 5, 8, linhas 2 a 5) como posições proibidas para produtos e empilhadeiras
+        # Define os corredores (colunas 2, 5, 8, linhas 2 a 7) como posições proibidas para produtos e empilhadeiras
         corridor_positions = [(i, j) for i in range(2, 8) for j in (2, 5, 8)]
 
         # Gera posições possíveis para produtos e empilhadeiras (excluindo corredores)
@@ -145,8 +143,8 @@ class MarketApp:
         print("Produtos e empilhadeiras adicionados!")
 
     def move_cart_random(self):
-        corridor_positions = [(i, j) for i in range(2, 6) for j in (2, 5, 8)]
         """Move o carrinho para uma posição aleatória que não seja bloqueada, empilhadeira ou um caixa."""
+        corridor_positions = [(i, j) for i in range(2, 8) for j in (2, 5, 8)]
         possible = [(i, j) for i in range(self.grid_size[0]) for j in range(self.grid_size[1])
                     if (i, j) not in self.blocked 
                     and (i, j) not in self.forklifts 
@@ -186,7 +184,7 @@ class MarketApp:
             for j in range(cols):
                 x1, y1 = j * self.cell_size + 10, i * self.cell_size + 10
                 x2, y2 = x1 + self.cell_size, y1 + self.cell_size
-                # Define corredores (colunas 2, 5, 8 com 4 blocos de altura)
+                # Define corredores (colunas 2, 5, 8 com 6 blocos de altura)
                 if (j == 2 or j == 5 or j == 8) and 2 <= i <= 7:
                     fill_color = "#8B4513"  # Marrom para corredores
                 else:
@@ -211,9 +209,21 @@ class MarketApp:
                     # Desenha chão do corredor ou área externa
                     self.canvas.create_rectangle(x1, y1, x2, y2, fill=fill_color, outline="#B0B0B0", width=1)
 
+        # Desenha o caminho, se existir
+        if self.path and self.current_step < len(self.path) - 1:
+            for i in range(self.current_step + 1):
+                if i > 0:  # Não desenha a linha do início
+                    prev = self.path[i - 1]
+                    curr = self.path[i]
+                    x1 = prev[1] * self.cell_size + self.cell_size // 2 + 10
+                    y1 = prev[0] * self.cell_size + self.cell_size // 2 + 10
+                    x2 = curr[1] * self.cell_size + self.cell_size // 2 + 10
+                    y2 = curr[0] * self.cell_size + self.cell_size // 2 + 10
+                    self.canvas.create_line(x1, y1, x2, y2, fill="#FFC107", width=4)
+
     def animate_path(self):
         """Anima o caminho desenhando passo a passo até o final."""
-        if self.path and self.current_step < len(self.path) - 1:  # Desenha até o último passo
+        if self.path and self.current_step < len(self.path) - 1:
             self.is_animating = True  # Indica que a animação está em andamento
             prev = self.path[self.current_step]
             curr = self.path[self.current_step + 1]
@@ -228,35 +238,21 @@ class MarketApp:
             self.current_step = 0  # Reinicia para a próxima animação
             self.is_animating = False  # Indica que a animação terminou
 
-    def run_search(self, algorithm):
-        """
-        Executa o algoritmo de busca especificado (bfs ou dfs).
-        
-        Args:
-            algorithm: Função de busca (bfs ou dfs)
-        """
-        # Só redesenha o mercado se não houver animação em andamento
-        if not self.is_animating:
-            self.draw_market()
+    def run_bfs(self):
+        """Executa a busca em largura."""
+        print("Iniciando BFS...")
         start_time = time.time()
-        
-        if algorithm == bfs:
-            algorithm_name = "BFS"
-        else:
-            algorithm_name = "DFS"
-        
-        # Executa o algoritmo
-        self.path, cashier = algorithm(self.graph, self.start, set(self.cashiers))
+        self.path, cashier = bfs(self.graph, self.start, set(self.cashiers))
         elapsed = (time.time() - start_time) * 1000
         
         if self.path:
             steps = len(self.path) - 1
-            msg = f"{algorithm_name}: {steps} passos até o caixa {cashier}, {elapsed:.2f}ms"
+            msg = f"BFS: {steps} passos até o caixa {cashier}, {elapsed:.2f}ms"
             print(msg + f": {self.path}")
             self.result_label.config(text=msg)
             # Armazena o resultado para análise
             self.performance_results.append({
-                "algorithm": algorithm_name,
+                "algorithm": "BFS",
                 "steps": steps,
                 "time_ms": elapsed,
                 "start": self.start,
@@ -265,51 +261,28 @@ class MarketApp:
             })
             self.current_step = 0
             self.animate_path()
-            return self.path, cashier
         else:
-            msg = f"{algorithm_name}: Nenhum caminho encontrado!"
+            msg = "BFS: Nenhum caminho encontrado!"
             print(msg)
             self.result_label.config(text=msg)
-            return None, None
-
-    def run_bfs(self):
-        """Executa a busca em largura e, se encontrar um caminho, executa o DFS automaticamente."""
-        print("Iniciando BFS...")
-        bfs_path, bfs_cashier = self.run_search(bfs)
-        if bfs_path:  # Se o BFS encontrar um caminho, executa o DFS
-            print("BFS encontrou um caminho. Agendando DFS...")
-            self.root.after(1000 * (len(bfs_path) - 1), self.run_dfs)  # Aguarda a animação do BFS terminar
-        else:
-            print("BFS não encontrou um caminho. DFS não será executado.")
-
-    def run_dfs(self):
-        """Executa a busca em profundidade."""
-        print("Iniciando DFS...")
-        self.run_search(dfs)
 
     def show_performance_analysis(self):
-        """Exibe uma análise de desempenho comparando BFS e DFS."""
+        """Exibe uma análise de desempenho para BFS."""
         if not self.performance_results:
             self.result_label.config(text="Nenhum resultado de desempenho disponível!")
             print("Nenhum resultado de desempenho disponível!")
             return
 
-        # Separa resultados por algoritmo
-        bfs_results = [r for r in self.performance_results if r["algorithm"] == "BFS"]
-        dfs_results = [r for r in self.performance_results if r["algorithm"] == "DFS"]
-
-        # Calcula médias
+        # Calcula médias para BFS
+        bfs_results = self.performance_results
         bfs_avg_steps = sum(r["steps"] for r in bfs_results) / len(bfs_results) if bfs_results else 0
         bfs_avg_time = sum(r["time_ms"] for r in bfs_results) / len(bfs_results) if bfs_results else 0
-        dfs_avg_steps = sum(r["steps"] for r in dfs_results) / len(dfs_results) if dfs_results else 0
-        dfs_avg_time = sum(r["time_ms"] for r in dfs_results) / len(dfs_results) if dfs_results else 0
 
         # Monta a mensagem de análise
         analysis_msg = (
-            "Análise de Desempenho:\n"
-            f"BFS - Média de Passos: {bfs_avg_steps:.2f}, Média de Tempo: {bfs_avg_time:.2f}ms\n"
-            f"DFS - Média de Passos: {dfs_avg_steps:.2f}, Média de Tempo: {dfs_avg_time:.2f}ms\n"
-            f"Total de Execuções: BFS ({len(bfs_results)}), DFS ({len(dfs_results)})"
+            "Análise de Desempenho (BFS):\n"
+            f"Média de Passos: {bfs_avg_steps:.2f}, Média de Tempo: {bfs_avg_time:.2f}ms\n"
+            f"Total de Execuções: {len(bfs_results)}"
         )
 
         # Exibe no terminal
@@ -320,12 +293,12 @@ class MarketApp:
 
         # Opcional: Exibe uma janela com detalhes de cada execução
         details_window = tk.Toplevel(self.root)
-        details_window.title("Detalhes de Desempenho")
+        details_window.title("Detalhes de Desempenho (BFS)")
         details_text = tk.Text(details_window, height=20, width=80)
         details_text.pack(padx=10, pady=10)
-        details_text.insert(tk.END, "Detalhes de Cada Execução:\n\n")
+        details_text.insert(tk.END, "Detalhes de Cada Execução (BFS):\n\n")
         for i, result in enumerate(self.performance_results, 1):
-            details_text.insert(tk.END, f"Execução {i} ({result['algorithm']}):\n")
+            details_text.insert(tk.END, f"Execução {i}:\n")
             details_text.insert(tk.END, f"  Início: {result['start']}, Caixa: {result['cashier']}\n")
             details_text.insert(tk.END, f"  Passos: {result['steps']}, Tempo: {result['time_ms']:.2f}ms\n")
             details_text.insert(tk.END, f"  Caminho: {result['path']}\n\n")

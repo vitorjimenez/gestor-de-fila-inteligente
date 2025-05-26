@@ -1,5 +1,3 @@
-from collections import deque
-
 class MarketGraph:
     """Classe que representa o grafo do mercado como uma lista de adjacência."""
     
@@ -8,11 +6,13 @@ class MarketGraph:
         self.graph = {}
 
     def add_vertex(self, vertex):
-        """Adiciona um vértice ao grafo se ele não existir.
+        """Adiciona um vértice ao grafo se ele não existir e for uma tupla válida.
         
         Args:
-            vertex: O vértice a ser adicionado.
+            vertex: O vértice a ser adicionado (tupla (i, j)).
         """
+        if not isinstance(vertex, tuple) or len(vertex) != 2 or not all(isinstance(x, int) for x in vertex):
+            raise ValueError("Vértice deve ser uma tupla (i, j) com inteiros.")
         if vertex not in self.graph:
             self.graph[vertex] = []
 
@@ -20,13 +20,15 @@ class MarketGraph:
         """Adiciona uma aresta bidirecional entre v1 e v2.
         
         Args:
-            v1: Primeiro vértice.
-            v2: Segundo vértice.
+            v1: Primeiro vértice (tupla (i, j)).
+            v2: Segundo vértice (tupla (i, j)).
         """
         self.add_vertex(v1)
         self.add_vertex(v2)
-        self.graph[v1].append(v2)
-        self.graph[v2].append(v1)
+        if v2 not in self.graph[v1]:  # Evita duplicatas
+            self.graph[v1].append(v2)
+        if v1 not in self.graph[v2]:  # Evita duplicatas
+            self.graph[v2].append(v1)
     
     def get_vertices(self):
         """Retorna a lista de todos os vértices do grafo.
