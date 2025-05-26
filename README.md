@@ -1,14 +1,14 @@
 # 🚀 SmartQueue Market - Gestor de Filas Inteligentes
 
-**Resumo:** Sistema simulador avançado para otimização de filas em supermercados que utiliza estrutura de grafos e algoritmos de busca (BFS e DFS) para encontrar o caminho mais eficiente até o caixa com menor fila, proporcionando uma experiência mais eficiente aos clientes através de visualização gráfica interativa.
+**Resumo:** Sistema simulador avançado para otimização de filas em supermercados que utiliza estrutura de grafos e algoritmo de busca BFS para encontrar o caminho mais eficiente até o caixa com menor fila, proporcionando uma experiência mais eficiente aos clientes através de visualização gráfica interativa.
 
 ---
 
 ## 🎯 Objetivo
 
-O SmartQueue Market resolve o problema de otimização de deslocamento em supermercados, modelando o ambiente como um grafo onde cada nó representa uma posição no espaço e as arestas indicam os possíveis deslocamentos. O sistema permite localizar o caminho mais eficiente até o caixa com menos fila, simular obstáculos e áreas congestionadas, e comparar a eficiência entre diferentes algoritmos de busca.
+O SmartQueue Market resolve o problema de otimização de deslocamento em supermercados, modelando o ambiente como um grafo onde cada nó representa uma posição no espaço e as arestas indicam os possíveis deslocamentos. O sistema permite localizar o caminho mais eficiente até o caixa com menos fila, simular obstáculos e áreas congestionadas utilizando o algoritmo de busca em largura (BFS).
 
-A motivação surge da necessidade de melhorar a experiência do cliente em ambientes comerciais, reduzindo o tempo gasto em filas e otimizando o fluxo de pessoas. O projeto aplica diretamente os conceitos de estrutura de dados (grafos, filas, pilhas) e algoritmos de busca estudados na disciplina, demonstrando sua aplicação prática em problemas reais.
+A motivação surge da necessidade de melhorar a experiência do cliente em ambientes comerciais, reduzindo o tempo gasto em filas e otimizando o fluxo de pessoas. O projeto aplica diretamente os conceitos de estrutura de dados (grafos, filas) e algoritmo de busca estudados na disciplina, demonstrando sua aplicação prática em problemas reais.
 
 ---
 
@@ -20,8 +20,8 @@ A motivação surge da necessidade de melhorar a experiência do cliente em ambi
 - **Random** - Para geração de bloqueios aleatórios
 - **Time** - Para medição de desempenho
 - **Unittest** - Para execução de testes unitários
-- **Estruturas de Dados Avançadas** - Implementação de grafos, filas e pilhas
-- **Algoritmos de Busca** - BFS e DFS otimizados para o contexto de filas
+- **Estruturas de Dados Avançadas** - Implementação de grafos e filas
+- **Algoritmo de Busca** - BFS otimizado para o contexto de filas
 
 ---
 
@@ -31,16 +31,14 @@ A motivação surge da necessidade de melhorar a experiência do cliente em ambi
 📦 gestor-de-fila-inteligente
 ├── 📁 src
 │   ├── 📁 algorithms
-│   │   ├── bfs.py                # Implementação do algoritmo BFS
-│   │   └── dfs.py                # Implementação do algoritmo DFS
+│   │   └── bfs.py                # Implementação do algoritmo BFS
 │   ├── 📁 data
 │   │   └── market_graph.py       # Classe base para o grafo do mercado
 │   ├── 📁 utils
 │   │   └── visualization.py      # Interface gráfica e lógica de simulação
 │   └── main.py                   # Ponto de entrada do programa
 ├── 📁 tests
-│   ├── test_bfs.py               # Testes unitários para BFS
-│   └── test_dfs.py               # Testes unitários para DFS
+│   └── test_bfs.py               # Testes unitários para BFS
 ├── 📁 images
 │   ├── Logo.png                  # Logo do projeto
 │   └── fluxo-aplicacao.png       # Fluxograma da aplicação
@@ -79,7 +77,6 @@ python -m src.main
 
 ```bash
 python -m unittest tests/test_bfs.py
-python -m unittest tests/test_dfs.py
 ```
 
 > 💡 Uma janela gráfica será aberta automaticamente com o simulador de filas.
@@ -102,13 +99,12 @@ python -m unittest tests/test_dfs.py
 ### Como Usar:
 1. Clique em "Adicionar Produtos" para gerar obstáculos aleatórios
 2. Use "Mover Carrinho (Aleatório)" ou clique em uma célula livre para reposicionar
-3. Selecione "Navegar com BFS" ou "Navegar com DFS" para encontrar o melhor caminho
+3. Selecione "Navegar com BFS" para encontrar o melhor caminho
 4. Observe a animação do caminho calculado até o caixa mais próximo
 5. Use "Resetar Mercado" para reiniciar a simulação
 
-### Algoritmos Implementados:
+### Algoritmo Implementado:
 - **BFS (Busca em Largura)**: Encontra o caminho mais curto até um caixa disponível
-- **DFS (Busca em Profundidade)**: Explora rotas alternativas em caso de obstáculos
 
 ---
 
@@ -124,8 +120,8 @@ python -m unittest tests/test_dfs.py
 
 ## 🧠 Disciplinas Envolvidas
 
-- **Estrutura de Dados I** - Implementação de grafos, filas e pilhas
-- **Algoritmos de Busca** - Aplicação prática de BFS e DFS
+- **Estrutura de Dados I** - Implementação de grafos e filas
+- **Algoritmos de Busca** - Aplicação prática de BFS
 - **Programação Orientada a Objetos** - Modelagem das classes do sistema
 
 ---
@@ -134,8 +130,8 @@ python -m unittest tests/test_dfs.py
 
 - **Universidade:** Universidade Braz Cubas
 - **Curso:** Ciência da Computação
-- **Semestre:** 2º
-- **Período:** Manhã/Noite
+- **Semestre:** 4º e 5º
+- **Período:** Noite
 - **Professora orientadora:** Dra. Andréa Ono Sakai
 - **Evento:** Mostra de Tecnologia 1º Semestre de 2025
 - **Local:** Laboratório 12
@@ -148,11 +144,11 @@ python -m unittest tests/test_dfs.py
 | Etapa | Atividades | Prazo | Status |
 |-------|-----------|-------|--------|
 | 1 | Definição do objetivo | 24/04/2025 | ✅ Concluído |
-| 2 | Seleção dos algoritmos (BFS/DFS) | 30/04/2025 | ✅ Concluído |
+| 2 | Seleção do algoritmo (BFS) | 30/04/2025 | ✅ Concluído |
 | 3 | Escolha das tecnologias | 05/05/2025 | ✅ Concluído |
 | 4 | Criação da estrutura de pastas | 10/05/2025 | ✅ Concluído |
 | 5 | Implementação do grafo | 10/05/2025 | ✅ Concluído |
-| 6 | Implementação de BFS e DFS | 12/05/2025 | ✅ Concluído |
+| 6 | Implementação de BFS | 12/05/2025 | ✅ Concluído |
 | 7 | Interface gráfica | 13/05/2025 | ✅ Concluído |
 | 8 | Testes e validação | 13/06/2025 | ✅ Concluído |
 | 9 | Documentação | 15/06/2025 | ✅ Concluído |
@@ -167,8 +163,7 @@ python -m unittest tests/test_dfs.py
 - **Restrições**: Corredores marrons, produtos e empilhadeiras bloqueiam o movimento
 
 ### Análise de Desempenho
-- Comparação de eficiência entre algoritmos BFS e DFS
-- Medição de tempo de execução
+- Medição de tempo de execução do algoritmo BFS
 - Contagem de passos necessários para chegar ao destino
 
 ---
