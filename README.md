@@ -120,7 +120,7 @@ python -m unittest tests/test_bfs.py
 
 ## 🧠 Disciplinas Envolvidas
 
-- **Estrutura de Dados I** - Implementação de grafos e filas
+- **Estrutura de Dados ** - Implementação de grafos e filas
 - **Algoritmos de Busca** - Aplicação prática de BFS
 - **Programação Orientada a Objetos** - Modelagem das classes do sistema
 
