@@ -85,7 +85,7 @@ python -m unittest tests/test_bfs.py
 
 ## 🚀 Fluxo da aplicação
 - **Fluxo**: Representação do fluxo a aplicação, sendo possível entender um pouco melhor dos requisitos funcionais da aplicação
-<img src="./images/fluxo.PNG" width=850px" height="400px">
+<img src="./images/fluxo.PNG" width="850px" height="400px">
 
 
 ## 📸 Demonstrações
